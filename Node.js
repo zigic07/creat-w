@@ -27,7 +27,7 @@ app.post('/upload', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on https://github.com/zigic07/upload:${PORT}`);
+    console.log(`Server is running on https://github.com/zigic07/creat-w/upload:${PORT}`);
 });
 fs.writeFile('test.txt', 'Hello, World!', (err) => {
     if (err) console.error('Cannot write file', err);
@@ -35,7 +35,7 @@ fs.writeFile('test.txt', 'Hello, World!', (err) => {
 });
 
 
-fetch('https://github.com/zigic07/upload', {
+fetch('https://github.com/zigic07/creat-w/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: imageData })
