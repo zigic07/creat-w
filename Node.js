@@ -55,3 +55,9 @@ fetch('https://github.com/zigic07/upload', {
     console.error('Fetch error:', err);
     alert(`Failed to send image: ${err.message}`);
 });
+const cors = require('cors');
+app.use(cors({
+    origin: 'https://zigic07.github.io/creat-w/', // Domain của frontend
+    methods: ['GET', 'POST'],       // Các phương thức được phép
+}));
+
