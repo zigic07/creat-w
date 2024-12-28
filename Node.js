@@ -34,3 +34,25 @@ fs.writeFile('test.txt', 'Hello, World!', (err) => {
     if (err) console.error('Cannot write file', err);
     else console.log('Test file written successfully');
 });
+
+
+fetch('http://localhost:3000/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image: imageData })
+})
+.then(response => {
+    console.log('Server response:', response);
+    if (response.ok) {
+        alert('Image sent successfully!');
+    } else {
+        return response.text().then(text => {
+            console.error('Error from server:', text);
+            alert(`Failed to send image: ${text}`);
+        });
+    }
+})
+.catch(err => {
+    console.error('Fetch error:', err);
+    alert(`Failed to send image: ${err.message}`);
+});
