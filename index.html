@@ -3,50 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Capture</title>
+    <title>Camera Upload</title>
 </head>
-    
 <body>
-    <h1>Camera Capture</h1>
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas" style="display: none;"></canvas>
+    <h1>Camera Upload</h1>
+    <video id="video" autoplay></video>
     <button id="capture">Capture</button>
-
+    <canvas id="canvas" style="display:none;"></canvas>
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const captureButton = document.getElementById('capture');
 
-        // Access camera
+        // Yêu cầu quyền camera và hiển thị video
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
+            .then((stream) => {
                 video.srcObject = stream;
             })
-            .catch(err => {
-                console.error("Error accessing camera: ", err);
+            .catch((err) => {
+                console.error('Error accessing camera:', err);
+                alert('Failed to access the camera');
             });
 
-        // Capture and send images
+        // Chụp ảnh và gửi đến server
         captureButton.addEventListener('click', () => {
             const context = canvas.getContext('2d');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const imageData = canvas.toDataURL('image/png'); // Image in base64
-            fetch('/upload', {
+
+            const imageData = canvas.toDataURL('image/png');
+
+            fetch('https://your-backend-domain.com/upload', { // Thay bằng URL backend
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ image: imageData })
+                body: JSON.stringify({ image: imageData }),
             })
             .then(response => {
                 if (response.ok) {
-                    alert('Image sent successfully!');
+                    alert('Image uploaded successfully!');
                 } else {
-                    alert('Failed to send image');
+                    return response.text().then(text => {
+                        console.error('Error from server:', text);
+                        alert(`Failed to upload image: ${text}`);
+                    });
                 }
+            })
+            .catch(err => {
+                console.error('Error sending image:', err);
+                alert(`Error sending image: ${err.message}`);
             });
         });
     </script>
