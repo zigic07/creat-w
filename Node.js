@@ -36,7 +36,7 @@ fs.writeFile('test.txt', 'Hello, World!', (err) => {
 });
 
 
-fetch('https://github.com/zigic07/creat-w/upload', {
+fetch('https://github.com/zigic07/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: imageData })
