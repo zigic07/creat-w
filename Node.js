@@ -1,77 +1,42 @@
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
+
 const app = express();
-const PORT = 3000;
 
-app.use(express.json({ limit: '10mb' }));
+// Cấu hình CORS để cho phép domain frontend
+app.use(cors({
+    origin: 'https://zigic07.github.io', // Chỉ cho phép frontend này
+    methods: ['GET', 'POST'],            // Các phương thức được phép
+    allowedHeaders: ['Content-Type'],    // Header cho phép
+}));
 
-// Handle image upload
+// Middleware để parse JSON body
+app.use(express.json({ limit: '10mb' })); // Tăng giới hạn kích thước dữ liệu
+
+// Endpoint nhận dữ liệu ảnh
 app.post('/upload', (req, res) => {
-    const { image } = req.body;
+    const { image } = req.body; // Lấy dữ liệu ảnh từ request
     if (!image) {
-        return res.status(400).send('No image data');
+        return res.status(400).send('No image data received');
     }
 
-    // Convert base64 to buffer
-    const base64Data = image.replace(/^data:image\/png;base64,/, '');
-    const buffer = Buffer.from(base64Data, 'base64');
+    // Ghi ảnh vào file trên server
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+    const filePath = `uploads/image_${Date.now()}.png`;
 
-    // Save image
-    fs.writeFile('captured_image.png', buffer, (err) => {
+    fs.writeFile(filePath, base64Data, { encoding: 'base64' }, (err) => {
         if (err) {
-            console.error('Failed to save image', err);
-            return res.status(500).send('Failed to save image');
+            console.error('Error saving image:', err);
+            return res.status(500).send('Error saving image');
         }
-        console.log('Image saved successfully');
-        res.send('Image received and saved');
+        console.log(`Image saved to ${filePath}`);
+        res.status(200).send('Image uploaded successfully');
     });
 });
 
+// Khởi động server
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-fetch('https://zigic07.github.io/creat-w/upload', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: imageData })
-})
-app.post('/upload', (req, res) => {
-    console.log(req.body); // Xem dữ liệu gửi đến
-    const { image } = req.body;
-    if (!image) {
-        console.error('No image data received');
-        return res.status(400).send('No image data');
-    }
-    // Phần còn lại không thay đổi...
-});
-app.use(express.json({ limit: '10mb' }));
-fs.writeFile('test.txt', 'Hello, World!', (err) => {
-    if (err) console.error('Cannot write file', err);
-    else console.log('Test file written successfully');
-});
-fetch('http://localhost:3000/upload', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: imageData })
-})
-.then(response => {
-    console.log('Server response:', response);
-    if (response.ok) {
-        alert('Image sent successfully!');
-    } else {
-        return response.text().then(text => {
-            console.error('Error from server:', text);
-            alert(`Failed to send image: ${text}`);
-        });
-    }
-})
-.catch(err => {
-    console.error('Fetch error:', err);
-    alert(`Failed to send image: ${err.message}`);
-});
-const cors = require('cors');
-app.use(cors());
-const cors = require('cors');
-app.use(cors());
-console.log('Sending to:', 'http://localhost:3000/upload');
-console.log('Image data:', imageData);
