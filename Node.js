@@ -11,6 +11,7 @@ app.post('/upload', (req, res) => {
     if (!image) {
         return res.status(400).send('No image data');
     }
+
     // Convert base64 to buffer
     const base64Data = image.replace(/^data:image\/png;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
@@ -27,15 +28,28 @@ app.post('/upload', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on https://zigic07.github.io/creat-w/upload:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
+fetch('https://zigic07.github.io/creat-w/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image: imageData })
+})
+app.post('/upload', (req, res) => {
+    console.log(req.body); // Xem dữ liệu gửi đến
+    const { image } = req.body;
+    if (!image) {
+        console.error('No image data received');
+        return res.status(400).send('No image data');
+    }
+    // Phần còn lại không thay đổi...
+});
+app.use(express.json({ limit: '10mb' }));
 fs.writeFile('test.txt', 'Hello, World!', (err) => {
     if (err) console.error('Cannot write file', err);
     else console.log('Test file written successfully');
 });
-
-
-fetch('https://zigic07.github.io/creat-w/upload', {
+fetch('http://localhost:3000/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: imageData })
@@ -56,8 +70,8 @@ fetch('https://zigic07.github.io/creat-w/upload', {
     alert(`Failed to send image: ${err.message}`);
 });
 const cors = require('cors');
-app.use(cors({
-    origin: 'https://zigic07.github.io/creat-w/', // Domain của frontend
-    methods: ['GET', 'POST'],       // Các phương thức được phép
-}));
-
+app.use(cors());
+const cors = require('cors');
+app.use(cors());
+console.log('Sending to:', 'http://localhost:3000/upload');
+console.log('Image data:', imageData);
