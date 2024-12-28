@@ -11,7 +11,6 @@ app.post('/upload', (req, res) => {
     if (!image) {
         return res.status(400).send('No image data');
     }
-
     // Convert base64 to buffer
     const base64Data = image.replace(/^data:image\/png;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
@@ -28,7 +27,7 @@ app.post('/upload', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on https://github.com/zigic07/upload:${PORT}`);
 });
 fs.writeFile('test.txt', 'Hello, World!', (err) => {
     if (err) console.error('Cannot write file', err);
