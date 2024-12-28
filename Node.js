@@ -30,3 +30,7 @@ app.post('/upload', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+fs.writeFile('test.txt', 'Hello, World!', (err) => {
+    if (err) console.error('Cannot write file', err);
+    else console.log('Test file written successfully');
+});
